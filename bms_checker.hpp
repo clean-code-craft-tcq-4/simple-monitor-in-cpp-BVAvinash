@@ -3,17 +3,15 @@
 
 #include <iostream>
 #include <assert.h>
+#include <vector>
 #include "bms_param.hpp"
 
 namespace bms
 {
 	class BatteryHealth
 	{
-	private:
-		bool batteryStatus;
-
 	public:
-		bool batteryIsOk(float temperature, float soc, float chargeRate);
+		bool batteryIsOk(std::vector<float> batteryParam);
 	};
 }
 
