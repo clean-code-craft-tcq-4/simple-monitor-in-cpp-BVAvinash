@@ -1,38 +1,28 @@
 #include "bms_checker.hpp"
+#include <algorithm>
 
-bool bms::BatteryHealth::batteryIsOk(float temperature, float soc, float chargeRate) 
+bool bms::BatteryHealth::batteryIsOk(std::vector<float> batteryParam)
 {
-	auto batteryCheck = [](auto temperatureFromBattery, auto socFromBattery, auto chargeRateFromBattery) 
+	for (int index = 0; index < batteryParam.size(); index++)
 	{
-		if (temperatureFromBattery < temperature_min || temperatureFromBattery > temperature_max)
+		if (index == 0 && (batteryParam[index] < temperature_min || batteryParam[index] > temperature_max))
 		{
 			std::cout << "Temperature out of range!\n";
 			return false;
 		}
-		else if (socFromBattery < soc_min || socFromBattery > soc_max)
+
+		if (index == 1 && (batteryParam[index] < soc_min || batteryParam[index] > soc_max))
 		{
 			std::cout << "State of Charge out of range!\n";
 			return false;
 		}
-		else if (chargeRateFromBattery > chargeRate_max)
+
+		if (index == 2 && (batteryParam[index] > chargeRate_max))
 		{
 			std::cout << "Charge Rate out of range!\n";
 			return false;
 		}
-		else
-		{
-			return true;
-		}
-	};
-
-	batteryStatus = batteryCheck(temperature, soc, chargeRate);
-
-	if (batteryStatus == true)
-	{
-		return true;
 	}
-	else
-	{
-		return false;
-	}
+
+	return true;
 }
