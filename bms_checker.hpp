@@ -10,10 +10,11 @@ namespace bms
 	class BatteryHealth
 	{
 	private:
-		bool batteryTemperatureIsOk(float temperature);
-		bool batterySocIsOk(float soc);
-		bool batteryChargeRateIsOk(float chargeRate);
-		bool checkRange(float actualValue, float minValue, float maxValue);
+        bool batteryTemperatureIsOk(float temperature);
+        bool batterySocIsOk(float soc);
+        bool batteryChargeRateIsOk(float chargeRate);
+        bool checkRange(float actualValue, float minValue, float maxValue);
+        void printErrorMessage(int messageKey);
 
 	public:
 		bool batteryIsOk(float temperature, float soc, float chargeRate);
