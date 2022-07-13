@@ -5,14 +5,19 @@ bool bms::BatteryHealth::checkRange(float actualValue, float minValue, float max
 	return (actualValue < minValue || actualValue > maxValue);
 }
 
-void bms::BatteryHealth::checkBreach(float actualValue, float minValue, float maxValue, BATTERY_PARAMETER parameter)
+void bms::BatteryHealth::checkBreachLow(float actualValue, float minValue, float maxValue, BATTERY_PARAMETER parameter)
 {
     float tolerance = (maxValue * 5) / 100;
     if (actualValue > minValue && actualValue < (minValue + tolerance))
     {
         printWarnMessage(parameter, bms::LOW);
     }
-    else if (actualValue > (maxValue - tolerance) && actualValue < maxValue)
+}
+
+void bms::BatteryHealth::checkBreachHigh(float actualValue, float maxValue, BATTERY_PARAMETER parameter) 
+{
+    float tolerance = (maxValue * 5) / 100;
+    if (actualValue >(maxValue - tolerance) && actualValue < maxValue)
     {
         printWarnMessage(parameter, bms::HIGH);
     }
@@ -31,7 +36,8 @@ void bms::BatteryHealth::printErrorMessage(BATTERY_PARAMETER messageKey)
 bool bms::BatteryHealth::batteryTemperatureIsOk(float temperature) 
 {
 	bool result = true;
-    checkBreach(temperature, temperature_min, temperature_max, bms::BATTERY_TEMPERATURE);
+    checkBreachLow(temperature, temperature_min, temperature_max, bms::BATTERY_TEMPERATURE);
+    checkBreachHigh(temperature, temperature_max, bms::BATTERY_TEMPERATURE);
 	if (checkRange(temperature, temperature_min, temperature_max))
 	{
         printErrorMessage(bms::BATTERY_TEMPERATURE);
@@ -43,7 +49,8 @@ bool bms::BatteryHealth::batteryTemperatureIsOk(float temperature)
 bool bms::BatteryHealth::batterySocIsOk(float soc) 
 {
 	bool result = true;
-    checkBreach(soc, soc_min, soc_max, bms::BATTERY_SOC);
+    checkBreachLow(soc, soc_min, soc_max, bms::BATTERY_SOC);
+    checkBreachHigh(soc, soc_max, bms::BATTERY_SOC);
 	if (checkRange(soc, soc_min, soc_max))
 	{
         printErrorMessage(bms::BATTERY_SOC);
@@ -55,7 +62,8 @@ bool bms::BatteryHealth::batterySocIsOk(float soc)
 bool bms::BatteryHealth::batteryChargeRateIsOk(float chargeRate) 
 {
 	bool result = true;
-    checkBreach(chargeRate, chargeRate_min, chargeRate_max, bms::BATTERY_CHARGE_RATE);
+    checkBreachLow(chargeRate, chargeRate_min, chargeRate_max, bms::BATTERY_CHARGE_RATE);
+    checkBreachHigh(chargeRate,chargeRate_max, bms::BATTERY_CHARGE_RATE);
 	if (checkRange(chargeRate, chargeRate_min, chargeRate_max))
 	{
         printErrorMessage(bms::BATTERY_CHARGE_RATE);
