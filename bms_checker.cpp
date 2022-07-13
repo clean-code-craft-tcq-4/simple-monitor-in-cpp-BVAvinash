@@ -5,17 +5,36 @@ bool bms::BatteryHealth::checkRange(float actualValue, float minValue, float max
 	return (actualValue < minValue || actualValue > maxValue);
 }
 
-void bms::BatteryHealth::printErrorMessage(int messageKey) 
+void bms::BatteryHealth::checkBreach(float actualValue, float minValue, float maxValue, BATTERY_PARAMETER parameter)
 {
-	std::cout << messageFactor[languageOption][messageKey] << messageTrailing[languageOption] << "\n";
+    float tolerance = (maxValue * 5) / 100;
+    if (actualValue > minValue && actualValue < (minValue + tolerance))
+    {
+        printWarnMessage(parameter, bms::LOW);
+    }
+    if (actualValue > (maxValue - tolerance) && actualValue < maxValue)
+    {
+        printWarnMessage(parameter, bms::HIGH);
+    }
+}
+
+void bms::BatteryHealth::printWarnMessage(BATTERY_PARAMETER parameter, PARAMETER_BREACH_TYPE breachType)
+{
+    std::cout << messageWarn[breachType] << "_" << messageFactor[languageOption][parameter] << "_WARN\n";
+}
+
+void bms::BatteryHealth::printErrorMessage(BATTERY_PARAMETER messageKey)
+{
+    std::cout << messageFactor[languageOption][messageKey] << messageTrailing[languageOption] << "\n";
 }
 
 bool bms::BatteryHealth::batteryTemperatureIsOk(float temperature) 
 {
 	bool result = true;
+    checkBreach(temperature, temperature_min, temperature_max, bms::BATTERY_TEMPERATURE);
 	if (checkRange(temperature, temperature_min, temperature_max))
 	{
-		printErrorMessage(0);
+        printErrorMessage(bms::BATTERY_TEMPERATURE);
 		result = false;
 	}
 	return result;
@@ -24,9 +43,10 @@ bool bms::BatteryHealth::batteryTemperatureIsOk(float temperature)
 bool bms::BatteryHealth::batterySocIsOk(float soc) 
 {
 	bool result = true;
+    checkBreach(soc, soc_min, soc_max, bms::BATTERY_SOC);
 	if (checkRange(soc, soc_min, soc_max))
 	{
-		printErrorMessage(1);
+        printErrorMessage(bms::BATTERY_SOC);
 		result = false;
 	}
 	return result;
@@ -35,9 +55,10 @@ bool bms::BatteryHealth::batterySocIsOk(float soc)
 bool bms::BatteryHealth::batteryChargeRateIsOk(float chargeRate) 
 {
 	bool result = true;
+    checkBreach(chargeRate, chargeRate_min, chargeRate_max, bms::BATTERY_CHARGE_RATE);
 	if (checkRange(chargeRate, chargeRate_min, chargeRate_max))
 	{
-		printErrorMessage(2);
+        printErrorMessage(bms::BATTERY_CHARGE_RATE);
 		result = false;
 	}
 	return result;
