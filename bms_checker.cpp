@@ -12,7 +12,7 @@ void bms::BatteryHealth::checkBreach(float actualValue, float minValue, float ma
     {
         printWarnMessage(parameter, bms::LOW);
     }
-    if (actualValue > (maxValue - tolerance) && actualValue < maxValue)
+    else if (actualValue > (maxValue - tolerance) && actualValue < maxValue)
     {
         printWarnMessage(parameter, bms::HIGH);
     }
