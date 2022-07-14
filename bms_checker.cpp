@@ -2,7 +2,7 @@
 
 bool bms::BatteryHealth::checkRange(float actualValue, float minValue, float maxValue) 
 {
-	return (actualValue < minValue || actualValue > maxValue);
+    return (actualValue <= minValue || actualValue > maxValue);
 }
 
 void bms::BatteryHealth::checkBreachLow(float actualValue, float minValue, float maxValue, BATTERY_PARAMETER parameter)
@@ -17,7 +17,7 @@ void bms::BatteryHealth::checkBreachLow(float actualValue, float minValue, float
 void bms::BatteryHealth::checkBreachHigh(float actualValue, float maxValue, BATTERY_PARAMETER parameter) 
 {
     float tolerance = (maxValue * 5) / 100;
-    if (actualValue >(maxValue - tolerance) && actualValue < maxValue)
+    if (actualValue >= (maxValue - tolerance) && actualValue <= maxValue)
     {
         printWarnMessage(parameter, bms::HIGH);
     }
@@ -30,7 +30,7 @@ void bms::BatteryHealth::printWarnMessage(BATTERY_PARAMETER parameter, PARAMETER
 
 void bms::BatteryHealth::printErrorMessage(BATTERY_PARAMETER messageKey)
 {
-    std::cout << messageFactor[languageOption][messageKey] << messageTrailing[languageOption] << "\n";
+    std::cout << messageFactor[languageOption][messageKey] << " " << messageTrailing[languageOption] << "\n";
 }
 
 bool bms::BatteryHealth::batteryTemperatureIsOk(float temperature) 
